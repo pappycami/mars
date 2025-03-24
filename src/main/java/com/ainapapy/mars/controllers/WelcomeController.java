@@ -1,4 +1,4 @@
-package com.ainapapy.mars.controller;
+package com.ainapapy.mars.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

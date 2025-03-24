@@ -1,14 +1,26 @@
-package com.ainapapy.mars.entities;
+package com.ainapapy.mars.models;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import lombok.*;
 
 @Entity
-@Table(name="utilisateurs")
+@Table(name = "utilisateurs")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Utilisateur implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -18,6 +30,19 @@ public class Utilisateur implements Serializable {
     private Long id;
     private String email;
     private String motDePasse;
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "utilisateur_id"))
+    @Column(name = "role")
+    private Set<String> roles = new HashSet<>();
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
+    }
 
     public Long getId() {
         return id;
@@ -62,7 +87,7 @@ public class Utilisateur implements Serializable {
 
     @Override
     public String toString() {
-        return "com.ainapapy.mars.entity.Utilisateur[ id=" + id + " ]";
+        return "Model.Utilisateur[ id=" + id + " ]";
     }
     
 }
