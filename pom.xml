@@ -15,24 +15,12 @@
     <packaging>war</packaging>
     <name>mars</name>
     <description>Mars Project en Spring Boot Aina Papy</description>
-    
-    <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
-    <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
-    </scm>
+  
     <properties>
         <java.version>17</java.version>
         <maven.compiler.release>17</maven.compiler.release>
     </properties>
+    
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
