@@ -13,10 +13,6 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  *
@@ -24,10 +20,6 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "utilisateurs")
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Utilisateur implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,7 +33,12 @@ public class Utilisateur implements Serializable {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "utilisateur_id"))
     @Column(name = "role")
-    private Set<String> roles = new HashSet<>();
+    @SuppressWarnings("serial")
+    private Set<String> roles;
+
+    public Utilisateur() {
+        this.roles = new HashSet<>();
+    }
 
     public Set<String> getRoles() {
         return roles;
