@@ -1,11 +1,9 @@
 package com.ainapapy.mars.controllers;
 
-import com.ainapapy.mars.repositories.UtilisateurRepository;
 import com.ainapapy.mars.models.dto.UtilisateurDto;
-import com.ainapapy.mars.models.Utilisateur;
+import com.ainapapy.mars.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -14,25 +12,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthRestController {
     
     @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private AuthService authService;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UtilisateurDto utilisateurDto) {
-        if (utilisateurRepository.findByEmail(utilisateurDto.getEmail()).isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Email déjà utilisé !");
+    public ResponseEntity<?> register(@RequestBody UtilisateurDto dto) {
+        String token = authService.register(dto);
+        return ResponseEntity.ok().body("Token : " + token);
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UtilisateurDto dto) {
+        try {
+            String token = authService.login(dto);
+            return ResponseEntity.ok().body("Token : " + token);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body("Erreur : " + e.getMessage());
         }
-
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setEmail(utilisateurDto.getEmail());
-        utilisateur.setMotDePasse(passwordEncoder.encode(utilisateurDto.getPassword()));
-        utilisateur.getRoles().add("ROLE_USER"); // Ajout d'un rôle par défaut
-
-        utilisateurRepository.save(utilisateur);
-        return ResponseEntity.ok("Utilisateur enregistré avec succès !");
     }
 }
