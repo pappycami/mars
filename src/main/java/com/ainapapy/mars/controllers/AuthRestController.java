@@ -1,8 +1,10 @@
 package com.ainapapy.mars.controllers;
 
 import com.ainapapy.mars.repositories.UtilisateurRepository;
-import com.ainapapy.mars.utils.JwtUtil;
+import com.ainapapy.mars.models.dto.UtilisateurDto;
 import com.ainapapy.mars.models.Utilisateur;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,30 +12,27 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthRestController {
-    private final UtilisateurRepository utilisateurRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
-
-    public AuthRestController(UtilisateurRepository utilisateurRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
-        this.utilisateurRepository = utilisateurRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
-    }
+    
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public String register(@RequestBody Utilisateur utilisateur) {
-        utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
-        utilisateurRepository.save(utilisateur);
-        return "Utilisateur inscrit avec succès";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestBody Utilisateur utilisateur) {
-        Utilisateur user = utilisateurRepository.findByEmail(utilisateur.getEmail())
-                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
-        if (!passwordEncoder.matches(utilisateur.getMotDePasse(), user.getMotDePasse())) {
-            throw new RuntimeException("Mot de passe incorrect");
+    public ResponseEntity<?> register(@RequestBody UtilisateurDto utilisateurDto) {
+        if (utilisateurRepository.findByEmail(utilisateurDto.getEmail()).isPresent()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Email déjà utilisé !");
         }
-        return jwtUtil.generateToken(user.getEmail());
+
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setEmail(utilisateurDto.getEmail());
+        utilisateur.setMotDePasse(passwordEncoder.encode(utilisateurDto.getPassword()));
+        utilisateur.getRoles().add("ROLE_USER"); // Ajout d'un rôle par défaut
+
+        utilisateurRepository.save(utilisateur);
+        return ResponseEntity.ok("Utilisateur enregistré avec succès !");
     }
 }
