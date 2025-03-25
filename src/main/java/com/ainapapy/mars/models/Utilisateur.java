@@ -13,8 +13,15 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+/**
+ *
+ * @author ainap
+ */
 @Entity
 @Table(name = "utilisateurs")
 @Getter
