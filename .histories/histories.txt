@@ -1,1 +1,8 @@
 - ajout history
+Comparaison détaillée
+
+Étape 7 : Configurer Spring Security
+
+Solution 1 : Mettre à jour le cache de Maven
+
+1. Aspect-Oriented Programming (AOP) dans ton projet Java avec Spring
